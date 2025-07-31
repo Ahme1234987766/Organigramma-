@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sintetica - Organigramma Interattivo</title>
+<style>
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+  }
+  body {
+    font-family: Arial, sans-serif;
+    background: #f8f9fc;
+    color: #222;
+  }
+
+  header {
+    background: url('https://www.farmaindustriaticino.ch/files/2025/06/Sintetica-Logo-Claim-DarkBlue-CMYK.png') no-repeat center center;
+    background-size: contain;
+    background-position-y: 20px;
+    background-repeat: no-repeat;
+    background-color: #003366;
+    color: white;
+    padding: 180px 20px 50px;
+    text-align: center;
+    position: relative;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  header h1 {
+    margin-bottom: 10px;
+    font-weight: 700;
+    font-size: 2.2rem;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  }
+  header p {
+    font-size: 1.1rem;
+    font-weight: 400;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  }
+
+  #home {
+    max-width: 900px;
+    margin: 20px auto 60px;
+    text-align: center;
+  }
+
+  #sections {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+
+  .section-card {
+    background: #003366;
+    color: white;
+    width: 200px;
+    height: 140px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .section-card:hover {
+    background: #00509e;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  }
+  .section-card::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.3);
+  }
+
+  #icons-home {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 20px;
+  }
+  #icons-home img {
+    width: 120px;
+    height: auto;
+    filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.15));
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+  }
+  #icons-home img:hover {
+    transform: scale(1.05);
+  }
+
+  #search-bar {
+    max-width: 400px;
+    margin: 40px auto 0;
+  }
+  #search-bar input {
+    padding: 12px 20px;
+    font-size: 16px;
+    width: 100%;
+    border: 2px solid #003366;
+    border-radius: 30px;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  #search-bar input:focus {
+    border-color: #00509e;
+    box-shadow: 0 0 0 3px rgba(0,80,158,0.2);
+  }
+
+  #search-results {
+    max-width: 400px;
+    margin: 10px auto 30px;
+    background: white;
+    border: 1px solid #003366;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    display: none;
+    text-align: left;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  #search-results ul {
+    list-style: none;
+  }
+  #search-results li {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  #search-results li:last-child {
+    border-bottom: none;
+  }
+  #search-results li:hover {
+    background: #e6f0ff;
+  }
+
+  .org-section {
+    max-width: 1000px;
+    margin: 40px auto 80px;
+    padding: 0 20px;
+    position: relative;
+    display: none;
+  }
+  .org-section h2 {
+    text-align: center;
+    color: #003366;
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+    position: relative;
+    padding-bottom: 10px;
+  }
+  .org-section h2::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: #00509e;
+  }
+
+  .org-chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+    position: relative;
+  }
+  .person {
+    background: white;
+    border: 2px solid #003366;
+    border-radius: 8px;
+    padding: 18px 25px;
+    min-width: 240px;
+    text-align: center;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .person:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  }
+  .person span {
+    display: block;
+    font-weight: normal;
+    font-size: 14px;
+    margin-top: 5px;
+    color: #555;
+  }
+  .ceo {
+    background: #003366;
+    color: white;
+    border: none;
+    min-width: 260px;
+    padding: 20px 30px;
+  }
+  .ceo span {
+    color: #ddd;
+  }
+
+  .children {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .org-chart::before {
+    content: "";
+    position: absolute;
+    top: 80px;
+    width: 2px;
+    height: 40px;
+    background: #003366;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .children::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    width: 80%;
+    height: 2px;
+    background: #003366;
+    left: 10%;
+    right: 10%;
+    margin: 0 auto;
+  }
+
+  .back-btn {
+    display: block;
+    margin: 40px auto 0;
+    padding: 12px 35px;
+    background: #003366;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  }
+  .back-btn:hover {
+    background: #00509e;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+  }
+
+  .section-image {
+    max-width: 900px;
+    margin: 20px auto 40px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    border: 1px solid #ddd;
+  }
+
+  /* Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-content {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    position: relative;
+    animation: modalFadeIn 0.3s ease;
+  }
+  @keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .close-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #777;
+    transition: color 0.2s ease;
+  }
+  .close-modal:hover {
+    color: #333;
+  }
+  .modal-header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+  }
+  .modal-header h3 {
+    color: #003366;
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+  }
+  .modal-header p {
+    color: #666;
+    font-size: 1rem;
+  }
+  .modal-body {
+    margin-bottom: 20px;
+  }
+  .detail-row {
+    display: flex;
+    margin-bottom: 12px;
+  }
+  .detail-label {
+    font-weight: bold;
+    color: #003366;
+    width: 120px;
+  }
+  .detail-value {
+    flex: 1;
+    color: #555;
+  }
+
+  @media (max-width: 768px) {
+    header {
+      padding: 150px 20px 40px;
+      background-size: 200px;
+    }
+    
+    #sections {
+      gap: 20px;
+    }
+    
+    .section-card {
+      width: 160px;
+      height: 120px;
+      font-size: 16px;
+    }
+    
+    .children {
+      gap: 20px;
+    }
+    
+    .person {
+      min-width: 200px;
+    }
+    
+    .modal-content {
+      width: 95%;
+      padding: 20px;
+    }
+  }
+
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Sintetica Organigramma</h1>
+  <p>Visualizza e cerca i dipendenti delle sedi</p>
+</header>
+
+<!-- Home -->
+<div id="home">
+  <div id="sections">
+    <div class="section-card" data-section="corporate">Corporate</div>
+    <div class="section-card" data-section="mendrisio">Mendrisio Site</div>
+    <div class="section-card" data-section="couvet">Couvet Site</div>
+    <div class="section-card" data-section="gmbh">Sintetica GmbH</div>
+  </div>
+
+  <div id="icons-home">
+    <img src="https://images.squarespace-cdn.com/content/v1/644f5751dfa2937800c6ecd4/1682921391819-ERR3KJ724MYUR88DR5EX/Sintetica_IconaMendrisio.png" alt="Icona Mendrisio" />
+    <img src="https://images.squarespace-cdn.com/content/v1/644f5751dfa2937800c6ecd4/1682921391831-ET544PAXKQ9PF2WJ89P1/Sintetica_Infusion.png" alt="Icona Sintetica" />
+  </div>
+
+  <div id="search-bar">
+    <input type="text" id="searchInput" placeholder="Cerca dipendente per nome o cognome..." />
+    <div id="search-results"></div>
+  </div>
+</div>
+
+<!-- Corporate -->
+<section id="corporate" class="org-section">
+  <h2>Corporate</h2>
+  <div class="org-chart">
+    <div class="person ceo" data-name="Andrea Di Bitonto" data-role="CEO" data-birthdate="15/03/1975">CEO<br><span>Andrea Di Bitonto</span></div>
+    <div class="children">
+      <div class="person" data-name="Kristian Milojkovic" data-role="Manager" data-birthdate="22/07/1982">Manager<br><span>Kristian Milojkovic</span></div>
+      <div class="person" data-name="Robert Marenghi" data-role="Manager" data-birthdate="10/11/1978">Manager<br><span>Robert Marenghi</span></div>
+      <div class="person" data-name="Nicolo Indemini" data-role="Apprendista 3° anno IT" data-birthdate="05/05/2003">Apprendista 3° anno IT<br><span>Nicolo Indemini</span></div>
+    </div>
+  </div>
+  <button class="back-btn">Torna alla Home</button>
+</section>
+
+<!-- Mendrisio -->
+<section id="mendrisio" class="org-section">
+  <h2>Mendrisio Site</h2>
+  <img
+    class="section-image"
+    src="https://naxos-cdn01.gruppocdt.ch/cdt/stories/2023/12/16/960x640/86a0c501-74c0-4bc6-adc3-e7d704287463.jpeg"
+    alt="Mendrisio Site"
+  />
+  <div class="org-chart">
+    <div class="person ceo" data-name="Luca Conti" data-role="Site Manager" data-birthdate="18/09/1976">Site Manager<br><span>Luca Conti</span></div>
+    <div class="children">
+      <div class="person" data-name="Marco De Luca" data-role="Responsabile Produzione" data-birthdate="30/01/1980">Responsabile Produzione<br><span>Marco De Luca</span></div>
+      <div class="person" data-name="Laura Riva" data-role="Responsabile Qualità" data-birthdate="12/06/1985">Responsabile Qualità<br><span>Laura Riva</span></div>
+      <div class="person" data-name="Andrea Ferrari" data-role="Responsabile Logistica" data-birthdate="25/12/1979">Responsabile Logistica<br><span>Andrea Ferrari</span></div>
+    </div>
+    <div class="children">
+      <div class="person" data-name="Federico Rossi" data-role="Tecnico Linea 1" data-birthdate="08/04/1990">Tecnico Linea 1<br><span>Federico Rossi</span></div>
+      <div class="person" data-name="Sara Morelli" data-role="Tecnico Linea 2" data-birthdate="14/07/1992">Tecnico Linea 2<br><span>Sara Morelli</span></div>
+      <div class="person" data-name="Giovanni Bianchi" data-role="Magazziniere" data-birthdate="03/11/1987">Magazziniere<br><span>Giovanni Bianchi</span></div>
+      <div class="person" data-name="Ahmed Ferjani" data-role="Apprendista 2° anno IT" data-birthdate="19/02/2005">Apprendista 2° anno IT<br><span>Ahmed Ferjani</span></div>
+    </div>
+  </div>
+  <button class="back-btn">Torna alla Home</button>
+</section>
+
+<!-- Couvet -->
+<section id="couvet" class="org-section">
+  <h2>Couvet Site</h2>
+  <img
+    class="section-image"
+    src="https://images.squarespace-cdn.com/content/v1/644f5751dfa2937800c6ecd4/1682921298856-ME3ROKOPLKFJ2KV93P2Z/2005+Sintetica+-+Erwerb+von+Bioren+SA+Couvet.jpg"
+    alt="Couvet Site"
+  />
+  <div class="org-chart">
+    <div class="person ceo" data-name="Martina Greco" data-role="Site Manager" data-birthdate="27/05/1981">Site Manager<br><span>Martina Greco</span></div>
+    <div class="children">
+      <div class="person" data-name="Matteo Rossi" data-role="Produzione" data-birthdate="15/08/1988">Produzione<br><span>Matteo Rossi</span></div>
+      <div class="person" data-name="Elena Vitali" data-role="Manutenzione" data-birthdate="22/10/1983">Manutenzione<br><span>Elena Vitali</span></div>
+      <div class="person" data-name="Davide Pini" data-role="Qualità" data-birthdate="09/03/1977">Qualità<br><span>Davide Pini</span></div>
+    </div>
+  </div>
+  <button class="back-btn">Torna alla Home</button>
+</section>
+
+<!-- GmbH -->
+<section id="gmbh" class="org-section">
+  <h2>Sintetica GmbH</h2>
+  <div class="org-chart">
+    <div class="person ceo" data-name="Thomas Müller" data-role="General Manager" data-birthdate="11/12/1974">General Manager<br><span>Thomas Müller</span></div>
+    <div class="children">
+      <div class="person" data-name="Sabine Keller" data-role="Business Development" data-birthdate="04/07/1986">Business Development<br><span>Sabine Keller</span></div>
+      <div class="person" data-name="Markus Weber" data-role="Finance" data-birthdate="29/09/1979">Finance<br><span>Markus Weber</span></div>
+      <div class="person" data-name="Petra Schmid" data-role="Sales" data-birthdate="16/02/1982">Sales<br><span>Petra Schmid</span></div>
+    </div>
+  </div>
+  <button class="back-btn">Torna alla Home</button>
+</section>
+
+<!-- Modal Dipendente -->
+<div class="modal" id="employeeModal">
+  <div class="modal-content">
+    <span class="close-modal">&times;</span>
+    <div class="modal-header">
+      <h3 id="modalEmployeeName"></h3>
+      <p id="modalEmployeeRole"></p>
+    </div>
+    <div class="modal-body">
+      <div class="detail-row">
+        <div class="detail-label">Data di nascita:</div>
+        <div class="detail-value" id="modalEmployeeBirthdate"></div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Sede:</div>
+        <div class="detail-value" id="modalEmployeeSite"></div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Reparto:</div>
+        <div class="detail-value" id="modalEmployeeDepartment"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const home = document.getElementById('home');
+  const cards = document.querySelectorAll('.section-card');
+  const sections = document.querySelectorAll('.org-section');
+  const backBtns = document.querySelectorAll('.back-btn');
+  const searchInput = document.getElementById('searchInput');
+  const searchResults = document.getElementById('search-results');
+  const modal = document.getElementById('employeeModal');
+  const closeModal = document.querySelector('.close-modal');
+  
+  // Dati dipendenti estesi
+  const employees = [
+    { 
+      nome: "Andrea", 
+      cognome: "Di Bitonto", 
+      ruolo: "CEO", 
+      sede: "Corporate",
+      nascita: "15/03/1975",
+      reparto: "Direzione"
+    },
+    { 
+      nome: "Kristian", 
+      cognome: "Milojkovic", 
+      ruolo: "Manager", 
+      sede: "Corporate",
+      nascita: "22/07/1982",
+      reparto: "Management"
+    },
+    { 
+      nome: "Robert", 
+      cognome: "Marenghi", 
+      ruolo: "Manager", 
+      sede: "Corporate",
+      nascita: "10/11/1978",
+      reparto: "Management"
+    },
+    { 
+      nome: "Nicolo", 
+      cognome: "Indemini", 
+      ruolo: "Apprendista 3° anno IT", 
+      sede: "Corporate",
+      nascita: "05/05/2003",
+      reparto: "Formazione"
+    },
+    { 
+      nome: "Ahmed", 
+      cognome: "Ferjani", 
+      ruolo: "Apprendista 2° anno IT", 
+      sede: "Mendrisio",
+      nascita: "19/02/2005",
+      reparto: "Formazione"
+    },
+    { 
+      nome: "Luca", 
+      cognome: "Conti", 
+      ruolo: "Site Manager", 
+      sede: "Mendrisio",
+      nascita: "18/09/1976",
+      reparto: "Direzione Sito"
+    },
+    { 
+      nome: "Marco", 
+      cognome: "De Luca", 
+      ruolo: "Responsabile Produzione", 
+      sede: "Mendrisio",
+      nascita: "30/01/1980",
+      reparto: "Produzione"
+    },
+    { 
+      nome: "Laura", 
+      cognome: "Riva", 
+      ruolo: "Responsabile Qualità", 
+      sede: "Mendrisio",
+      nascita: "12/06/1985",
+      reparto: "Qualità"
+    },
+    { 
+      nome: "Andrea", 
+      cognome: "Ferrari", 
+      ruolo: "Responsabile Logistica", 
+      sede: "Mendrisio",
+      nascita: "25/12/1979",
+      reparto: "Logistica"
+    },
+    { 
+      nome: "Federico", 
+      cognome: "Rossi", 
+      ruolo: "Tecnico Linea 1", 
+      sede: "Mendrisio",
+      nascita: "08/04/1990",
+      reparto: "Produzione"
+    },
+    { 
+      nome: "Sara", 
+      cognome: "Morelli", 
+      ruolo: "Tecnico Linea 2", 
+      sede: "Mendrisio",
+      nascita: "14/07/1992",
+      reparto: "Produzione"
+    },
+    { 
+      nome: "Giovanni", 
+      cognome: "Bianchi", 
+      ruolo: "Magazziniere", 
+      sede: "Mendrisio",
+      nascita: "03/11/1987",
+      reparto: "Logistica"
+    },
+    { 
+      nome: "Martina", 
+      cognome: "Greco", 
+      ruolo: "Site Manager", 
+      sede: "Couvet",
+      nascita: "27/05/1981",
+      reparto: "Direzione Sito"
+    },
+    { 
+      nome: "Matteo", 
+      cognome: "Rossi", 
+      ruolo: "Produzione", 
+      sede: "Couvet",
+      nascita: "15/08/1988",
+      reparto: "Produzione"
+    },
+    { 
+      nome: "Elena", 
+      cognome: "Vitali", 
+      ruolo: "Manutenzione", 
+      sede: "Couvet",
+      nascita: "22/10/1983",
+      reparto: "Manutenzione"
+    },
+    { 
+      nome: "Davide", 
+      cognome: "Pini", 
+      ruolo: "Qualità", 
+      sede: "Couvet",
+      nascita: "09/03/1977",
+      reparto: "Qualità"
+    },
+    { 
+      nome: "Thomas", 
+      cognome: "Müller", 
+      ruolo: "General Manager", 
+      sede: "GmbH",
+      nascita: "11/12/1974",
+      reparto: "Direzione"
+    },
+    { 
+      nome: "Sabine", 
+      cognome: "Keller", 
+      ruolo: "Business Development", 
+      sede: "GmbH",
+      nascita: "04/07/1986",
+      reparto: "Business Development"
+    },
+    { 
+      nome: "Markus", 
+      cognome: "Weber", 
+      ruolo: "Finance", 
+      sede: "GmbH",
+      nascita: "29/09/1979",
+      reparto: "Finanza"
+    },
+    { 
+      nome: "Petra", 
+      cognome: "Schmid", 
+      ruolo: "Sales", 
+      sede: "GmbH",
+      nascita: "16/02/1982",
+      reparto: "Vendite"
+    },
+  ];
+
+  // Mostra sezione selezionata
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      home.style.display = 'none';
+      const sectionId = card.dataset.section;
+      sections.forEach(s => {
+        s.style.display = (s.id === sectionId) ? 'block' : 'none';
+      });
+      clearSearch();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // Torna alla home
+  backBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      sections.forEach(s => s.style.display = 'none');
+      home.style.display = 'block';
+      clearSearch();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // Funzione ricerca
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.trim().toLowerCase();
+    if (query.length === 0) {
+      searchResults.style.display = 'none';
+      searchResults.innerHTML = '';
+      return;
+    }
+
+    const filtered = employees.filter(e => 
+      e.nome.toLowerCase().includes(query) || e.cognome.toLowerCase().includes(query)
+    );
+
+    if (filtered.length === 0) {
+      searchResults.innerHTML = '<ul><li>Nessun risultato trovato</li></ul>';
+      searchResults.style.display = 'block';
+      return;
+    }
+
+    const resultsHTML = filtered.map(e => 
+      `<li data-sede="${e.sede.toLowerCase()}" data-name="${e.nome} ${e.cognome}" data-role="${e.ruolo}" data-birthdate="${e.nascita}" data-site="${e.sede}" data-department="${e.reparto}">
+        ${e.nome} ${e.cognome} - ${e.ruolo} (${e.sede})
+      </li>`
+    ).join('');
+    searchResults.innerHTML = `<ul>${resultsHTML}</ul>`;
+    searchResults.style.display = 'block';
+
+    // Aggiungo click su risultato per aprire sezione e modal
+    const items = searchResults.querySelectorAll('li');
+    items.forEach(item => {
+      item.addEventListener('click', () => {
+        const sede = item.dataset.sede;
+        home.style.display = 'none';
+        sections.forEach(s => {
+          s.style.display = (s.id === sede) ? 'block' : 'none';
+        });
+        searchResults.style.display = 'none';
+        searchInput.value = '';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Mostra modal con dettagli dipendente
+        showEmployeeModal(
+          item.dataset.name,
+          item.dataset.role,
+          item.dataset.birthdate,
+          item.dataset.site,
+          item.dataset.department
+        );
+      });
+    });
+  });
+
+  // Aggiungi click su ogni persona nell'organigramma
+  document.querySelectorAll('.person').forEach(person => {
+    person.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const name = this.dataset.name;
+      const role = this.dataset.role;
+      const birthdate = this.dataset.birthdate;
+      
+      // Trova il dipendente nei dati completi
+      const employee = employees.find(e => 
+        `${e.nome} ${e.cognome}` === name
+      );
+      
+      if (employee) {
+        showEmployeeModal(
+          name,
+          role,
+          birthdate,
+          employee.sede,
+          employee.reparto
+        );
+      }
+    });
+  });
+
+  // Mostra modal con dettagli dipendente
+  function showEmployeeModal(name, role, birthdate, site, department) {
+    document.getElementById('modalEmployeeName').textContent = name;
+    document.getElementById('modalEmployeeRole').textContent = role;
+    document.getElementById('modalEmployeeBirthdate').textContent = birthdate;
+    document.getElementById('modalEmployeeSite').textContent = site;
+    document.getElementById('modalEmployeeDepartment').textContent = department;
+    
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Chiudi modal
+  closeModal.addEventListener('click', () => {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  });
+
+  // Chiudi modal cliccando fuori
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+  });
+
+  function clearSearch() {
+    searchInput.value = '';
+    searchResults.style.display = 'none';
+    searchResults.innerHTML = '';
+  }
+
+</script>
+
+</body>
+</html>
